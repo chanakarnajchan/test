@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>บันทึกการรับประทานอาหาร</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f2f4f7;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .card {
+      max-width: 420px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .radio-group label {
+      background: #f5f6fa;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      flex: 1;
+      text-align: center;
+      margin: 0 4px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 26px;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: #4f8cff;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .success {
+      text-align: center;
+      color: green;
+      margin-top: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h2>บันทึกการรับประทานอาหาร</h2>
+
+    <label>ชื่อ - สกุล</label>
+    <input type="text" id="fullname" placeholder="กรอกชื่อ-สกุล">
+
+    <label>HN</label>
+    <input type="text" id="hn" placeholder="กรอก HN">
+
+    <label>มื้ออาหาร</label>
+    <div class="radio-group">
+      <label><input type="radio" name="meal" value="เช้า"> เช้า</label>
+      <label><input type="radio" name="meal" value="กลางวัน"> กลางวัน</label>
+      <label><input type="radio" name="meal" value="เย็น"> เย็น</label>
+    </div>
+
+    <label>รูปภาพอาหาร</label>
+    <input type="file" id="image" accept="image/*">
+
+    <label>ปริมาณที่ทาน</label>
+    <input type="text" id="amount" placeholder="เช่น หมด / ครึ่งหนึ่ง">
+
+    <button onclick="submitForm()">บันทึกข้อมูล</button>
+
+    <div id="result" class="success"></div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxyfVL01rePYP7zy6js2J1UHcgHtFEgeEY2RB9QpK8Xtf4Zsqgh4dlIMgOYFdOnIGPK6g/exec";
+
+    function submitForm() {
+      const fullname = document.getElementById("fullname").value;
+      const hn = document.getElementById("hn").value;
+      const amount = document.getElementById("amount").value;
+      const meal = document.querySelector('input[name="meal"]:checked')?.value;
+
+      if (!fullname || !hn || !meal) {
+        alert("กรุณากรอกข้อมูลให้ครบ");
+        return;
+      }
+
+      const data = {
+        fullname: fullname,
+        hn: hn,
+        meal: meal,
+        amount: amount,
+        imageUrl: document.getElementById("image").files[0]?.name || ""
+      };
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(data)
+      }).then(() => {
+        document.getElementById("result").innerText = "บันทึกข้อมูลเรียบร้อย ✔️";
+      });
+    }
+  </script>
+</body>
+</html>
